@@ -1,0 +1,41 @@
+{
+  "name": "pbd-rag-uexchatbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rdereparadores/PBD-RAG-UExChatbot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rdereparadores/PBD-RAG-UExChatbot/issues"
+  },
+  "homepage": "https://github.com/rdereparadores/PBD-RAG-UExChatbot#readme",
+  "dependencies": {
+    "@langchain/community": "^1.0.4",
+    "@langchain/core": "^1.0.6",
+    "@langchain/openai": "^1.1.2",
+    "@langchain/textsplitters": "^1.0.0",
+    "@llamaindex/chroma": "^0.0.36",
+    "@llamaindex/huggingface": "^0.1.31",
+    "@llamaindex/openai": "^0.4.21",
+    "@llamaindex/readers": "^3.1.21",
+    "@llamaindex/workflow": "^1.1.24",
+    "chromadb": "^3.1.5",
+    "langchain": "^1.0.6",
+    "llamaindex": "^0.12.0",
+    "puppeteer": "^24.30.0",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

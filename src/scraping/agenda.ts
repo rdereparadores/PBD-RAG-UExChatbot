@@ -1,6 +1,6 @@
-import puppeteer, {Browser, Page} from "puppeteer";
+import puppeteer, {Page} from "puppeteer";
 import fs from "node:fs";
-import {cleanContent, wait} from "./common";
+import {cleanContent} from "./common";
 import {v4 as uuidv4} from 'uuid';
 import {ArticleSchema} from "./article.schema";
 

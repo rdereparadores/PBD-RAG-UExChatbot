@@ -59,8 +59,6 @@ const init = async () => {
     //const data = await scrapArticle(page, articleLinks[0]);
     fs.writeFileSync('src/scraping/results/actualidad-universitaria.json', JSON.stringify(output));
 
-    const screenshot = await page.screenshot();
-    fs.writeFileSync('prueba.jpg', screenshot);
     await browser.close();
 }
 

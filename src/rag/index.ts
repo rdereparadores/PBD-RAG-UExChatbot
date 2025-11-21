@@ -24,9 +24,9 @@ const init = async () => {
     // PASO 5: Indexar documentos en ChromaDB
     const index = await VectorStoreIndex.fromVectorStore(vectorStore);
 
-    const queryEngine = index.asQueryEngine({ similarityTopK: 3 });
+    const queryEngine = index.asQueryEngine({ similarityTopK: 4 }); // similarityTopK: según chunkSize (1024 -> 2, 512 -> 4)
     const response = await queryEngine.query({
-        query: '¿Qué hay con el aula de flamenco?'
+        query: '¿Qué asignaturas se cursan el primer curso de ingeniería informática en ingenieria de software?'
     });
     console.log(response.toString());
     return;

@@ -40,6 +40,8 @@ export const createEmbeddings = async () => {
         baseURL: 'https://openrouter.ai/api/v1',
         model: 'text-embedding-3-small' // Probar a cambiar por otros
     });
+	// Settings.chunkSize = 512; // Por defecto: 1024
+	// Settings.chunkOverlap = 50; // Por defecto: 20
 
     // PASO 1: Obtener los artículos desde los ficheros JSON
     const articles: ArticleSchema[] = loadArticles();
@@ -55,7 +57,6 @@ export const createEmbeddings = async () => {
     // PASO 3.5: Inicializar el almacenamiento de datos (documentos + embeddings)
     const storageContext = await storageContextFromDefaults({
         vectorStore,
-        persistDir: 'uex-rag-embeddings'
     })
 
     // PASO 4: Indexar documentos en ChromaDB

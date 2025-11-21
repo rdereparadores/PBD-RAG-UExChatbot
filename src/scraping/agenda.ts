@@ -82,9 +82,6 @@ const init = async () => {
 
     const allEvents = [...upcomingEvents, ...ongoingEvents];
     fs.writeFileSync('src/scraping/results/agenda.json', JSON.stringify(allEvents));
-
-    const screenshot = await page.screenshot();
-    fs.writeFileSync('prueba.jpg', screenshot);
     await browser.close();
 }
 

@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "create-embeddings": "npx ts-node src/rag/create-embeddings.ts",
+    "start": "npx ts-node src/rag/index.ts",
+    "scrap:actualidad-universitaria": "npx ts-node src/scraping/actualidad-universitaria.ts",
+    "scrap:agenda": "npx ts-node src/scraping/agenda.ts",
+    "scrap:titulaciones": "npx ts-node src/scraping/titulaciones.ts"
   },
   "repository": {
     "type": "git",
@@ -18,17 +22,13 @@
   },
   "homepage": "https://github.com/rdereparadores/PBD-RAG-UExChatbot#readme",
   "dependencies": {
-    "@langchain/community": "^1.0.4",
-    "@langchain/core": "^1.0.6",
-    "@langchain/openai": "^1.1.2",
-    "@langchain/textsplitters": "^1.0.0",
     "@llamaindex/chroma": "^0.0.36",
     "@llamaindex/huggingface": "^0.1.31",
     "@llamaindex/openai": "^0.4.21",
     "@llamaindex/readers": "^3.1.21",
     "@llamaindex/workflow": "^1.1.24",
     "chromadb": "^3.1.5",
-    "langchain": "^1.0.6",
+    "dotenv": "^17.2.3",
     "llamaindex": "^0.12.0",
     "puppeteer": "^24.30.0",
     "uuid": "^13.0.0"

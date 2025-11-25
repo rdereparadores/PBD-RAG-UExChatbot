@@ -88,39 +88,31 @@ const scrapTitleOrMaster = async (page: Page, url: string) => {
 }
 
 const createArticle = (data: any) => {
-	return {
-		uuid: uuidv4(),
-		title: data.name,
-		url: data.link,
-		metadata: {
-			category: data.category,
-			tags: [data.info.center],
-			date: (new Date()).toLocaleDateString()
-		},
-		content: `
+	const content = `
 			NOMBRE DE LA TITULACIÓN: ${cleanContent(data.name)}
 			DURACIÓN: ${cleanContent(data.info.duration)}
 			MODALIDAD: ${cleanContent(data.info.modality)}
 			CENTRO EN EL QUE SE IMPARTE: ${cleanContent(data.info.center)}
 			-------------------------
-			SALIDAS DE LA TITULACIÓN: ${data.jobs}
-			-------------------------
 			PLANIFICACIÓN:
-			
 			${data.courses.map((item: any) => `
-			
 				${item.name}
 				ASIGNATURAS:
 				${item.subjects.map((subject: any) => `
-					- ${subject.name}
-					  ID: ${subject.id}
-					  TIPO: ${subject.type}
-					  SEMESTRE: ${subject.semester}
-					  CRÉDITOS: ${subject.credits}
+					*** NOMBRE: ${subject.name} ID: ${subject.id} TIPO: ${subject.type} SEMESTRE: ${subject.semester} CRÉDITOS: ${subject.credits} ***
 				`)}
-				-------------------------
-			`)}
-			`,
+			-------------------------`)}`;
+
+	return {
+		uuid: uuidv4(),
+		title: data.name,
+		url: data.link,
+		metadata: {
+			category: data.category + ': ' + cleanContent(data.name),
+			tags: [data.name, data.info.center],
+			date: (new Date()).toLocaleDateString()
+		},
+		content: content.replace(/[\t]+/g, ''),
 	}
 }
 
@@ -237,6 +229,7 @@ const init = async () => {
 
 	const subjects: ArticleSchema[] = [];
 	for (const subject of subjectInfo) {
+		continue;
 		const text = await scrapSubject(page, subject.url);
 		subjects.push({
 			uuid: uuidv4(),
@@ -253,8 +246,7 @@ const init = async () => {
 
 	fs.writeFileSync('src/scraping/results/titulaciones-grado.json', JSON.stringify(titles));
 	fs.writeFileSync('src/scraping/results/titulaciones-master.json', JSON.stringify(masters));
-	fs.writeFileSync('src/scraping/results/titulaciones-asignaturas.json', JSON.stringify(subjects));
-	//fs.writeFileSync('src/scraping/titulaciones-subject-ids.json', JSON.stringify(subjectUrls));
+	//fs.writeFileSync('src/scraping/results/titulaciones-asignaturas.json', JSON.stringify(subjects));
 
 	await browser.close();
 }

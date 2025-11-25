@@ -1,5 +1,5 @@
 import puppeteer, {Page} from "puppeteer";
-import fs, {linkSync} from "node:fs";
+import fs from "node:fs";
 import {ArticleSchema} from "../../../../Documents/UNIVERSIDAD/CURSO 4/PBD/PBD-RAG-UExChatbot-develop/src/scraping/article.schema";
 import {v4 as uuidv4} from "uuid";
 import {cleanContent, wait} from "../../../../Documents/UNIVERSIDAD/CURSO 4/PBD/PBD-RAG-UExChatbot-develop/src/scraping/common";

@@ -5,6 +5,7 @@ import {OpenAIEmbedding} from "@llamaindex/openai";
 import {ArticleSchema} from "../scraping/article.schema";
 import {Document} from "llamaindex";
 import {ChromaVectorStore} from "@llamaindex/chroma";
+import {HuggingFaceEmbedding} from "@llamaindex/huggingface";
 
 const loadArticles = () => {
     const inputDir = 'src/scraping/results/';
@@ -38,10 +39,11 @@ export const createEmbeddings = async () => {
     // PASO 0: Configurar LlamaIndex (cliente OpenAI para creación de embeddings)
     Settings.embedModel = new OpenAIEmbedding({
         baseURL: 'https://openrouter.ai/api/v1',
-        model: 'text-embedding-3-small' // Probar a cambiar por otros
+        model: 'google/gemini-embedding-001' //'text-embedding-3-small'
     });
-	// Settings.chunkSize = 512; // Por defecto: 1024
-	// Settings.chunkOverlap = 50; // Por defecto: 20
+	//Settings.embedModel = new HuggingFaceEmbedding();
+	Settings.chunkSize = 1024; // Por defecto: 1024
+	Settings.chunkOverlap = 100; // Por defecto: 20, recomendado 10-20% del tamaño de chunk
 
     // PASO 1: Obtener los artículos desde los ficheros JSON
     const articles: ArticleSchema[] = loadArticles();
@@ -59,10 +61,15 @@ export const createEmbeddings = async () => {
         vectorStore,
     })
 
-    // PASO 4: Indexar documentos en ChromaDB
-    await VectorStoreIndex.fromDocuments(documents, {
-        storageContext
-    });
+	// Paso 4: Indexar documentos en ChromaDB
+	for (let i = 0; i < documents.length; i += 50) {
+		console.log(`Procesando lote ${i} - ${i+50} de ${documents.length}`);
+		const chunk = documents.slice(i, i + 50);
+
+		await VectorStoreIndex.fromDocuments(chunk, {
+			storageContext
+		});
+	}
 
 }
 

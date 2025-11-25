@@ -1,8 +1,8 @@
 import puppeteer, {Page} from "puppeteer";
-import fs, {linkSync} from "node:fs";
-import {ArticleSchema} from "../../../../Documents/UNIVERSIDAD/CURSO 4/PBD/PBD-RAG-UExChatbot-develop/src/scraping/article.schema";
+import fs from "node:fs";
+import {ArticleSchema} from "./article.schema";
 import {v4 as uuidv4} from "uuid";
-import {cleanContent, wait} from "../../../../Documents/UNIVERSIDAD/CURSO 4/PBD/PBD-RAG-UExChatbot-develop/src/scraping/common";
+import {cleanContent, wait} from "./common";
 
 const scrapGoverment = async (page: Page, url: string): Promise<ArticleSchema> => {
     await page.goto(url, { waitUntil: "networkidle2" });
@@ -21,13 +21,6 @@ const scrapGoverment = async (page: Page, url: string): Promise<ArticleSchema> =
             return el.textContent
         })
 
-        const now = new Date();
-        const day = String(now.getDate()).padStart(2, "0");
-        const month = String(now.getMonth() + 1).padStart(2, "0");
-        const year = now.getFullYear();
-
-        const date = day + month + year;
-
         return {
             uuid: uuidv4(),
             title: title,
@@ -36,7 +29,7 @@ const scrapGoverment = async (page: Page, url: string): Promise<ArticleSchema> =
             metadata: {
                 category: 'Gobierno de la universidad',
                 tags: [title],
-                date: date
+                date: (new Date()).toLocaleDateString()
             }
         }
     }
@@ -75,7 +68,7 @@ const init = async () => {
     for (const link of articleLinks) {
         const data = await scrapGoverment(page, link);
         if(data.uuid !== "null") {
-            console.log(data)
+            //console.log(data)
             output.push(data);
             await wait(500);
         }

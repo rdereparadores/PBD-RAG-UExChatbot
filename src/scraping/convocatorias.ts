@@ -1,29 +1,38 @@
 import puppeteer, {Page} from "puppeteer";
-import {ArticleSchema} from "../../../../Documents/UNIVERSIDAD/CURSO 4/PBD/PBD-RAG-UExChatbot-develop/src/scraping/article.schema";
+import {ArticleSchema} from "./article.schema";
 import {v4 as uuidv4} from "uuid";
 import fs from "node:fs";
 
 const scrapConvocatorias = async (page: Page): Promise<ArticleSchema[]> => {
-    const now = new Date();
-    const day = String(now.getDate()).padStart(2, "0");
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const year = now.getFullYear();
-
-    const date = day + month + year;
-
     const convoactoriasGenerales = await page.$$eval("div.single_content ul li a", els => {
-        return els.map( el => {
-            const title = el.textContent.trim();
-            const url = el.href;
+        return els.map( (el,index) => {
+            if(index <= 3) {
+                const title = "Convocatoria de enero/mayo " + el.textContent.trim();
+                const url = el.href;
 
-            return {
-                title,
-                url,
-                content: `${title} el pdf es el siguiente: ${url}`,
-                metadata: {
-                    tags: [],
-                }
-            };
+                return {
+                    title,
+                    url,
+                    content: `Documento donde vienen las fechas de éxamenes para el grado de ${el.textContent.trim()}`,
+                    metadata: {
+                        caegory: "Convocatorias de éxamenes de Grado",
+                        tags: ["Grado", el.textContent.trim()],
+                    }
+                };
+            }else{
+                const title = el.textContent.trim();
+                const url = el.href;
+
+                return {
+                    title,
+                    url,
+                    content: `Documento donde vienen las fechas de éxamenes para todos los másteres}`,
+                    metadata: {
+                        caegory: "Convocatorias de éxamenes de Master",
+                        tags: ["Master", el.textContent.trim()],
+                    }
+                };
+            }
         });
     });
 
@@ -33,49 +42,12 @@ const scrapConvocatorias = async (page: Page): Promise<ArticleSchema[]> => {
         metadata: {
             category: 'Convocatorias de exámenes',
             tags: item.metadata.tags,
-            date: date
-        }
-    }));
-
-    const convocatoriasPorGrado = await page.$$eval("div.single_content ol li a", els => {
-        return els.map( (item,index) => {
-            const title = item.textContent.trim();
-            const url = item.href;
-
-            let content: string
-            let tag:string
-            if(index <= 3){
-                content= `Convocatoria de Enero-Mayo del ${title}, el pdf es: ${url}`
-                tag = `Convocatoria Enero-Mayo`
-            }else{
-                content = `Convocatoria de Mayo-Junio/Junio-Julio del ${title}, el pdf es: ${url}`
-                tag = `Convocatoria Mayo-Junio/Junio-Julio`
-            }
-
-            return {
-                title,
-                url,
-                content: content,
-                metadata:{
-                    tags:[tag]
-                }
-            };
-        });
-    });
-
-    const convocatoriasPorGradoConUUID = convocatoriasPorGrado.map(item => ({
-        uuid: uuidv4(),
-        ...item,
-        metadata: {
-            category: 'Convocatorias de exámenes',
-            tags: item.metadata.tags,
-            date: date
+            date: (new Date()).toLocaleDateString()
         }
     }));
 
     const convocatorias: ArticleSchema[] = []
     convocatoriasGeneralesConUUID.forEach(l => convocatorias.push(l));
-    convocatoriasPorGradoConUUID.forEach(l => convocatorias.push(l));
 
     return convocatorias
 }

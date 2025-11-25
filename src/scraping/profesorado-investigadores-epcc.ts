@@ -1,18 +1,12 @@
 import puppeteer, {Page} from "puppeteer";
 import fs from "node:fs";
 import {v4 as uuidv4} from "uuid";
-import {ArticleSchema} from "../../../../Documents/UNIVERSIDAD/CURSO 4/PBD/PBD-RAG-UExChatbot-develop/src/scraping/article.schema";
-import {cleanContent, wait} from "../../../../Documents/UNIVERSIDAD/CURSO 4/PBD/PBD-RAG-UExChatbot-develop/src/scraping/common";
+import {ArticleSchema} from "./article.schema";
+import {cleanContent, wait} from "./common";
 
 const scrapProfesores = async (page: Page, url: string): Promise<ArticleSchema> => {
     try {
         await page.goto(url, {waitUntil: "networkidle2"});
-
-        const now = new Date();
-        const day = String(now.getDate()).padStart(2, "0");
-        const month = String(now.getMonth() + 1).padStart(2, "0");
-        const year = now.getFullYear();
-        const date = day + month + year;
 
         const nombre = await page.$eval("#person-title", el => {
             return el.textContent
@@ -52,15 +46,47 @@ const scrapProfesores = async (page: Page, url: string): Promise<ArticleSchema> 
             tutoriasLimpias.push(cleanContent(tutoria))
         }
 
+        const facultades = await page.$eval('ul.list.list-icons', ul => {
+            let out = '';
+
+            // 1. Facultades = li directos del ul principal
+            const facultadesItems = ul.querySelectorAll(':scope > li');
+
+            facultadesItems.forEach(facultad => {
+                const nombreFacultad = facultad.querySelector(':scope > a')?.textContent.trim() || 'Sin nombre';
+
+                out += `Facultad: ${nombreFacultad}\n`;
+
+                // 2. Grados = ul hijo directo > li
+                const gradosItems = facultad.querySelectorAll(':scope > ul > li');
+
+                gradosItems.forEach(grado => {
+                    const nombreGrado = grado.querySelector(':scope > a')?.textContent.trim() || 'Sin nombre';
+                    out += `  Grado: ${nombreGrado}\n`;
+
+                    // 3. Asignaturas = ul hijo directo > li > a
+                    const asignaturas = grado.querySelectorAll(':scope > ul > li > a');
+
+                    asignaturas.forEach(asig => {
+                        out += `    - ${asig.textContent.trim()}\n`;
+                    });
+                });
+
+                out += '\n';
+            });
+
+            return out.trim();
+        });
+
         return {
             uuid: uuidv4(),
             title: `${nombre}`,
             url,
-            content: `Rol: ${rol}, Sitio habitual: ${sitioHabitual},Departamento: title:${enlacesInteresTexto[0]}, url:${enlacesInteresUrl[0]}, Sitio donde trabaja: title:${enlacesInteresTexto[1]}, url:${enlacesInteresUrl[1]}, correo: ${enlacesInteresTexto[2]}, telefono: ${telefono} , tutorias: ${tutoriasLimpias}`,
+            content: `Rol: ${rol}, Sitio habitual: ${sitioHabitual},Departamento: title:${enlacesInteresTexto[0]}, url:${enlacesInteresUrl[0]}, Sitio donde trabaja: title:${enlacesInteresTexto[1]}, url:${enlacesInteresUrl[1]}, correo: ${enlacesInteresTexto[2]}, telefono: ${telefono} , tutorias: ${tutoriasLimpias}, informacion sobre facultades, grados y asignaturas en las que imparte: ${facultades}`,
             metadata: {
                 category: `${rol}`,
-                tags: [`${rol}`,],
-                date: date
+                tags: [`${rol}`,"Asignaturas", "Facultades", "Grados"],
+                date: (new Date()).toLocaleDateString()
             }
         }
     }catch {

@@ -10,7 +10,7 @@
     "scrap:agenda": "npx ts-node src/scraping/agenda.ts",
     "scrap:titulaciones": "npx ts-node src/scraping/titulaciones.ts",
     "scrap:eduroam": "npx ts-node src/scraping/eduroam.ts",
-    "scrap:convocatorias": "npx ts-noce src/scraping/convocatorias.ts",
+    "scrap:convocatorias": "npx ts-node src/scraping/convocatorias.ts",
     "scrap:departamentos": "npx ts-node src/scraping/departamentos.ts",
     "scrap:gobierno-uex": "npx ts-node src/scraping/gobierno-uex.ts",
     "scrap:profesorado-investigadores-epcc": "npx ts-node src/scraping/profesorado-investigadores-epcc.ts"

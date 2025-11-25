@@ -1,8 +1,8 @@
 import puppeteer, {Page} from "puppeteer";
 import fs from "node:fs";
 import {v4 as uuidv4} from "uuid";
-import {ArticleSchema} from "../../../../Documents/UNIVERSIDAD/CURSO 4/PBD/PBD-RAG-UExChatbot-develop/src/scraping/article.schema";
-import {wait} from "../../../../Documents/UNIVERSIDAD/CURSO 4/PBD/PBD-RAG-UExChatbot-develop/src/scraping/common";
+import {ArticleSchema} from "./article.schema";
+import {wait} from "./common";
 
 const scrapDepartamentos = async (page: Page, url: string): Promise<ArticleSchema> => {
     await page.goto(url, { waitUntil: "networkidle2" });
@@ -34,13 +34,6 @@ const scrapDepartamentos = async (page: Page, url: string): Promise<ArticleSchem
         }))
     })
 
-    const now = new Date();
-    const day = String(now.getDate()).padStart(2, "0");
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const year = now.getFullYear();
-
-    const date = day + month + year;
-
     return {
         uuid: uuidv4(),
         title: `Departamento de ${title}`,
@@ -50,8 +43,8 @@ const scrapDepartamentos = async (page: Page, url: string): Promise<ArticleSchem
          Centros:{${centros.map(centro => `Centro: ${centro.title}, URL: ${centro.url}`)}}`,
         metadata: {
             category: 'Departamentos',
-            tags: [""],
-            date: date
+            tags: ["Grados", "Masters", "Centros"],
+            date: (new Date()).toLocaleDateString()
         }
     }
 

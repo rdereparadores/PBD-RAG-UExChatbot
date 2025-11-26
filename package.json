@@ -6,6 +6,7 @@
   "scripts": {
     "create-embeddings": "npx ts-node src/rag/create-embeddings.ts",
     "start": "npx ts-node src/rag/index.ts",
+    "startAgent": "npx ts-node src/rag/agent.ts",
     "scrap:actualidad-universitaria": "npx ts-node src/scraping/actualidad-universitaria.ts",
     "scrap:agenda": "npx ts-node src/scraping/agenda.ts",
     "scrap:titulaciones": "npx ts-node src/scraping/titulaciones.ts",

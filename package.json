@@ -35,12 +35,14 @@
     "@llamaindex/workflow": "^1.1.24",
     "chromadb": "^3.1.5",
     "dotenv": "^17.2.3",
+    "express": "^5.1.0",
     "llamaindex": "^0.12.0",
     "pdf-parse": "^2.4.5",
     "puppeteer": "^24.30.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "@types/express": "^5.0.5",
     "@types/node": "^24.10.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"

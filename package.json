@@ -6,7 +6,8 @@
   "scripts": {
     "create-embeddings": "npx ts-node src/rag/create-embeddings.ts",
     "start": "npx ts-node src/rag/index.ts",
-    "startAgent": "npx ts-node src/rag/agent.ts",
+    "start:backend": "uvicorn src.chat.main:app --reload --port 8888",
+    "start:frontend": "cd src/chat/frontend && npm run dev",
     "scrap:actualidad-universitaria": "npx ts-node src/scraping/actualidad-universitaria.ts",
     "scrap:agenda": "npx ts-node src/scraping/agenda.ts",
     "scrap:titulaciones": "npx ts-node src/scraping/titulaciones.ts",

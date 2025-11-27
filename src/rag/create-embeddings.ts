@@ -36,7 +36,7 @@ const articleToDocument = (article: ArticleSchema) => {
 }
 
 export const createEmbeddings = async () => {
-    // PASO 0: Configurar LlamaIndex (cliente OpenAI para creación de embeddings)
+    // PASO 0: Configurar LlamaIndex
     Settings.embedModel = new OpenAIEmbedding({
         baseURL: 'https://openrouter.ai/api/v1',
         model: 'google/gemini-embedding-001' //'text-embedding-3-small'

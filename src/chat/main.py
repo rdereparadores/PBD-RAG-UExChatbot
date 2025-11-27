@@ -66,7 +66,7 @@ rag_tool = FunctionTool.from_defaults(
 )
 
 llm = OpenAI(
-    model='gpt-5-mini',
+    model='gpt-5.1',
     api_base='https://openrouter.ai/api/v1',
     temperature=0,
     max_retries=3
@@ -77,7 +77,7 @@ agent = FunctionAgent(
     tools=[rag_tool],
     llm=llm,
     verbose=True,
-    system_prompt='Eres un asistente útil, diseñado para únicamente responder cuestiones sobre la Universidad de Extremadura. Nunca te inventes información ni digas nada que no se te haya proporcionado. Usa tus herramientas para asegurarte al 100% que la respuesta dada es certera. Tus respuestas serán en Markdown.'
+    system_prompt='Eres un asistente útil, diseñado para únicamente responder cuestiones sobre la Universidad de Extremadura. Nunca te inventes información ni digas NADA que no se te haya proporcionado. Usa tus herramientas para asegurarte al 100% que la respuesta dada es certera. Tus respuestas serán en Markdown. Usa tus herramientas tantas veces como necesites.'
 )
 
 async def agent_stream_generator(message: str):

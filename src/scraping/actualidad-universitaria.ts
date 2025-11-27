@@ -5,27 +5,30 @@ import {ArticleSchema} from "./article.schema";
 import {cleanContent, wait} from "./common";
 
 const scrapArticle = async (page: Page, url: string): Promise<ArticleSchema> => {
-    await page.goto(url, { waitUntil: "networkidle2" });
-    const content = await page.$eval("div.single_content", el => {
-        return el.textContent;
-    })
-    const urlSplitted = url.split('/');
-    const tags = await page.$$eval("div.meta_data span a", els => {
-        return els.map(e => e.textContent);
-    });
+	while (true) {
+		try {
+			await page.goto(url, { waitUntil: "networkidle2" });
+			const content = await page.$eval("div.single_content", el => {
+				return el.textContent;
+			})
+			const urlSplitted = url.split('/');
+			const tags = await page.$$eval("div.meta_data span a", els => {
+				return els.map(e => e.textContent);
+			});
 
-    return {
-        uuid: uuidv4(),
-        title: await page.title(),
-        url,
-        content: cleanContent(content),
-        metadata: {
-            category: 'Actualidad universitaria',
-            tags,
-            date: `${urlSplitted[5]}/${urlSplitted[4]}/${urlSplitted[3]}`
-        }
-    }
-
+			return {
+				uuid: uuidv4(),
+				title: await page.title(),
+				url,
+				content: cleanContent(content),
+				metadata: {
+					category: 'Actualidad universitaria',
+					tags,
+					date: `${urlSplitted[5]}/${urlSplitted[4]}/${urlSplitted[3]}`
+				}
+			}
+		} catch {}
+	}
 }
 
 const init = async () => {
@@ -38,9 +41,9 @@ const init = async () => {
     // Aceptar las cookies
     await page.locator('::-p-text(Aceptar)').click();
 
-    // Obtener artículos (páginas 1-5)
+    // Obtener artículos (páginas 1-10)
     const articleLinks: string[] = [];
-    for (let i = 2; i <= 5; i++) {
+    for (let i = 2; i <= 10; i++) {
         const links: string[] = await page.$$eval("h2.uex-accesibility-card-title a", els => {
             return els.map(e => e.href);
         });

@@ -5,6 +5,7 @@ from llama_index.core.tools import FunctionTool
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.llms.openai import OpenAI
 from llama_index.core.agent.workflow import FunctionAgent, AgentStream
+from llama_index.llms.openrouter import OpenRouter
 from llama_index.vector_stores.chroma import ChromaVectorStore
 
 from fastapi import FastAPI
@@ -62,12 +63,16 @@ def consultar_rag(consulta: str) -> str:
 rag_tool = FunctionTool.from_defaults(
     fn=consultar_rag,
     name="uex-rag",
-    description='Útil si la información proporcionada no es suficiente para atender a la pregunta. Conecta directamente con una base de datos vectorial, por tanto usa palabras clave antes que frases completas. Esta herramienta ya presupone que estás hablando sobre la Universidad de Extremadura, no hace falta que lo repitas.'
+    description='''
+        Usa esta herramienta en ESPAÑOL.
+        Útil si la información proporcionada no es suficiente para atender a la pregunta.
+        Conecta directamente con una base de datos vectorial, por tanto usa palabras clave antes que frases completas.
+        Esta herramienta ya presupone que estás hablando sobre la Universidad de Extremadura, no hace falta que lo repitas.
+    '''
 )
 
 llm = OpenAI(
     model='gpt-5.1',
-    api_base='https://openrouter.ai/api/v1',
     temperature=0,
     max_retries=3
 )
@@ -77,7 +82,14 @@ agent = FunctionAgent(
     tools=[rag_tool],
     llm=llm,
     verbose=True,
-    system_prompt='Eres un asistente útil, diseñado para únicamente responder cuestiones sobre la Universidad de Extremadura. Nunca te inventes información ni digas NADA que no se te haya proporcionado. Usa tus herramientas para asegurarte al 100% que la respuesta dada es certera. Tus respuestas serán en Markdown. Usa tus herramientas tantas veces como necesites.'
+    system_prompt='''
+        Eres un asistente útil, diseñado para únicamente responder cuestiones sobre la Universidad de Extremadura.
+        Nunca te inventes información ni digas NADA que no se te haya proporcionado.
+        Usa tus herramientas para asegurarte al 100% que la respuesta dada es certera.
+        Response SIEMPRE en MARKDOWN (enlaces, código, listas, estilo de texto...).
+        Usa tus herramientas tantas veces como necesites.
+        Responde en el MISMO IDIOMA que la pregunta, TRADUCE si es necesario.
+    '''
 )
 
 async def agent_stream_generator(message: str):
